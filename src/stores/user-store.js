@@ -15,7 +15,7 @@ export const useUserStore = defineStore('user', () => {
       })
       token.value = res.data.token
       expiresIn.value = res.data.expiresIn
-      localStorage.setItem('user', true)
+      sessionStorage.setItem('user', true)
       setTime()
     } catch (error) {
       console.log(error)
@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', () => {
       console.log(error);
     } finally {
       resetStore()
-      localStorage.removeItem('user')
+      sessionStorage.removeItem('user')
     }
   }
 
@@ -48,11 +48,11 @@ export const useUserStore = defineStore('user', () => {
       const res = await api.get('/auth/refresh')
       token.value = res.data.token
       expiresIn.value = res.data.expiresIn
-      localStorage.setItem('user', true)
+      sessionStorage.setItem('user', true)
       setTime()
     } catch (error) {
       console.log(error)
-      localStorage.removeItem('user')
+      sessionStorage.removeItem('user')
     }
   }
 

@@ -23,20 +23,43 @@ export default defineRouter(function (/* { store, ssrContext } */) {
       return next()
     }
 
-    // Sino existe el token
-    if (localStorage.getItem('user')) {
+    // Sino existe el token v2
+    if (requiredAuth || sessionStorage.getItem("user")) {
       await userStore.refreshToken()
-      if (requiredAuth) {
-        // validar al usuario o token
-        if (userStore.token) {
-          return next()
-        }
-        return next("/login")
+      if (userStore.token) {
+        return next()
       }
+      return next("/login")
     }
-
     return next()
   })
 
   return Router
+
+  //   // Sino existe el token v1
+  //   if (sessionStorage.getItem('user')) {
+  //     await userStore.refreshToken()
+  //     if (requiredAuth) {
+  //       // validar al usuario o token
+  //       if (userStore.token) {
+  //         return next()
+  //       }
+  //       return next("/login")
+  //     } else {
+  //       return next()
+  //     }
+  //   } else {
+  //     if (requiredAuth) {
+  //       await userStore.refreshToken()
+  //       if (userStore.token) {
+  //         return next()
+  //       }
+  //       return next("/login")
+  //     }
+  //   }
+
+  //   return next()
+  // })
+
+  // return Router
 })
