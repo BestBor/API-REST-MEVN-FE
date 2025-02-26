@@ -1,32 +1,19 @@
 <template>
   <q-page padding>
-    <q-btn @click="access">Ingresar</q-btn>
+    <!-- <q-btn @click="userStore.access">Ingresar</q-btn> -->
     <q-btn @click="createLink">Crear Link</q-btn>
-    {{ token }} - {{ expiresIn }}
+    <!-- <q-btn @click="userStore.logout">Cerrar sesión</q-btn> -->
+    {{ userStore.token }} - {{ userStore.expiresIn }}
   </q-page>
 </template>
 
 <script setup>
 // import axios from 'axios'
 import { api } from 'src/boot/axios'
-import { ref } from 'vue'
+import { useUserStore } from '../stores/user-store'
 
-const token = ref('')
-const expiresIn = ref('')
-
-const access = async () => {
-  try {
-    const res = await api.post('/auth/login', {
-      email: 'test@test.com',
-      password: '123123',
-    })
-    token.value = res.data.token
-    expiresIn.value = res.data.expiresIn
-    setTime()
-  } catch (error) {
-    console.log(error)
-  }
-}
+const userStore = useUserStore()
+// userStore.refreshToken()
 
 const createLink = async () => {
   try {
@@ -34,7 +21,7 @@ const createLink = async () => {
       method: 'POST',
       url: '/links',
       headers: {
-        Authorization: 'Bearer ' + token.value,
+        Authorization: 'Bearer ' + userStore.token.value,
       },
       data: {
         longLink: 'https://www.youtube.com/@GitHub',
@@ -46,25 +33,4 @@ const createLink = async () => {
   }
 }
 
-const setTime = async () => {
-  setTimeout(
-    () => {
-      refreshToken()
-    },
-    expiresIn.value * 1000 - 6000,
-  )
-}
-
-const refreshToken = async () => {
-  try {
-    const res = await api.get('/auth/refresh')
-    token.value = res.data.token
-    expiresIn.value = res.data.expiresIn
-    setTime()
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-refreshToken()
 </script>

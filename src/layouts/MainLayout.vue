@@ -15,7 +15,10 @@
           Quasar App
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn color="dark" to="/">Inicio</q-btn>
+        <q-btn color="green" @click="accessUser" v-if="!userStore.token">LogIn</q-btn>
+        <q-btn color="red" @click="logout" v-if="userStore.token">LogOut</q-btn>
+        <q-btn color="orange" to="/secured" v-if="userStore.token">Secured</q-btn>
       </q-toolbar>
     </q-header>
 
@@ -48,6 +51,26 @@
 <script setup>
 import { ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import { useUserStore } from '../stores/user-store'
+import { useRouter } from 'vue-router'
+
+const leftDrawerOpen = ref(false)
+const userStore = useUserStore()
+const router = useRouter()
+
+const logout = () => {
+  userStore.logout()
+  router.push('/login')
+}
+
+const accessUser = async () => {
+  await userStore.access()
+  router.push('/')
+}
+
+function toggleLeftDrawer () {
+  leftDrawerOpen.value = !leftDrawerOpen.value
+}
 
 const linksList = [
   {
@@ -94,9 +117,4 @@ const linksList = [
   }
 ]
 
-const leftDrawerOpen = ref(false)
-
-function toggleLeftDrawer () {
-  leftDrawerOpen.value = !leftDrawerOpen.value
-}
 </script>
