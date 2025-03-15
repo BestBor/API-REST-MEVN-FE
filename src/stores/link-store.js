@@ -23,7 +23,8 @@ export const useLinkStore = defineStore("link", () => {
       })
       links.value.push(res.data.newLink)
     } catch (error) {
-      console.log(error.response?.data || error)
+      // console.log(error.response?.data || error)
+      throw error.response?.data || error
     }
   }
 
