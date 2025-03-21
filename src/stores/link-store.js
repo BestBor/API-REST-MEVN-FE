@@ -44,11 +44,46 @@ export const useLinkStore = defineStore("link", () => {
     }
   }
 
+  const modifyLink = async (newLink) => {
+    try {
+      await api({
+        url: `links/${newLink._id}`,
+        method: 'PATCH',
+        headers: {
+          Authorization: 'Bearer ' + userStore.token
+        },
+        data: {
+          longLink: newLink.longLink
+        }
+      })
+      links.value = links.value.map((item) => item._id === newLink._id ? newLink : item)
+    } catch (error) {
+      console.log(error.response?.data || error);
+    }
+  }
+
+  const removeLink = async (_id) => {
+    try {
+      await api({
+        url: `links/${_id}`,
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + userStore.token
+        },
+      })
+      links.value = links.value.filter(item => item._id !== _id)
+    } catch (error) {
+      console.log(error.response?.data || error);
+    }
+  }
+
   getLinks()
 
   return {
     createLink,
     links,
-    getLinks
+    getLinks,
+    modifyLink,
+    removeLink,
   }
 })

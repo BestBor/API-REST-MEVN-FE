@@ -1,10 +1,7 @@
 <template>
   <q-page padding>
-    <AddLink />
-    <pre>
-      {{useLink.links}}
-    </pre>
-      <CardLink v-for="link in useLink.links" :key="link._id" />
+    <AddLink class="q-mb-xl" />
+    <CardLink v-for="link in useLink.links" :key="link._id" :link="link"/>
   </q-page>
 </template>
 
