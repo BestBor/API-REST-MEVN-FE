@@ -50,7 +50,10 @@ export default defineConfig((/* ctx */) => {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        FRONT_URI: 'http://localhost:9000',
+        MY_API_REST: 'http://localhost:5000/api/v1',
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -91,7 +94,7 @@ export default defineConfig((/* ctx */) => {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Dialog", "Notify"]
+      plugins: ["Dialog", "Notify", "LoadingBar"]
     },
 
     // animations: 'all', // --- includes all animations

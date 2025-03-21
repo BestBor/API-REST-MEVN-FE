@@ -1,9 +1,11 @@
 <script setup>
 import { useLinkStore } from '../stores/link-store'
 import { useQuasar } from 'quasar'
+import { useNotify } from '../composables/notifyHook'
 
 const useLink = useLinkStore()
 const $q = useQuasar()
+const { errorNotify, successNotify } = useNotify()
 
   defineProps({
     link: Object
@@ -20,12 +22,10 @@ const $q = useQuasar()
         // console.log('>>>> OK')
         try {
           await useLink.removeLink(_id)
-          console.log("Link eliminado");
+          successNotify('Link eliminado')
         } catch (error) {
           console.log(error);
         }
-      }).onCancel(() => {
-        // console.log('>>>> Cancel')
       })
   }
 
@@ -40,9 +40,32 @@ const $q = useQuasar()
         cancel: true,
         persistent: true,
       }).onOk(async (data) => {
-        const modLink = { ...link, longLink: data }
-        await useLink.modifyLink(modLink)
+        try {
+          const modLink = { ...link, longLink: data }
+          await useLink.modifyLink(modLink)
+          successNotify('Link actualizado')
+        } catch (error) {
+          if (error.errors) {
+            return error.errors?.forEach(element => {
+              errorNotify(element.msg)
+            });
+          }
+          errorNotify(error)
+        }
+
       })
+  }
+
+  const copyLink = async(nanoLink) => {
+    try {
+      console.log(process.env.FRONT_URI);
+      const path = `${process.env.FRONT_URI}/${nanoLink}`
+      await navigator.clipboard.writeText(path)
+      successNotify("Agregado al portapapeles")
+    } catch (error) {
+      console.log(error);
+      errorNotify(error)
+    }
   }
 
 </script>
@@ -59,13 +82,7 @@ const $q = useQuasar()
     <q-card-actions>
       <q-btn flat round icon="mdi-delete-variant" color="red" @click="deleteLink(link._id)"/>
       <q-btn flat round icon="mdi-pencil-outline" @click="updateLink(link)"/>
-      <q-btn flat color="primary">Copiar</q-btn>
-      <q-btn flat>
-        7:30PM
-      </q-btn>
-      <q-btn flat color="primary">
-        Reserve
-      </q-btn>
+      <q-btn flat color="primary" @click="copyLink(link.nanoLink)">Copiar</q-btn>
     </q-card-actions>
 
   </q-card>
