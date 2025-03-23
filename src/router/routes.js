@@ -3,10 +3,12 @@ import { api } from 'src/boot/axios';
 const redirectLink = async (to, from, next) => {
   console.log(to.params.nanoid);
   try {
-   await api.get(``)
+    const {data} = await api.get(`/links/${to.params.nanoid}`)
+    window.location.href = data.longLink
+    next()
   } catch (error) {
     console.log(error);
-    next()
+    next('/404')
   }
 }
 
@@ -27,6 +29,10 @@ const routes = [
         beforeEnter: redirectLink
       },
     ]
+  },
+  {
+    path: '/404',
+    component: () => import('pages/ErrorNotFound.vue')
   },
   {
     path: '/:catchAll(.*)*',

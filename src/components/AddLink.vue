@@ -6,6 +6,7 @@
   const useLink = useLinkStore()
   const { showNotify } = useNotify()
 
+  const addForm = ref(null)
   const link = ref("")
   const loading = ref(false)
 
@@ -15,6 +16,7 @@
       await useLink.createLink(link.value)
       showNotify('Link agregado con exito', 'green', 'announcement')
       link.value = ""
+      addForm.value.resetValidation()
     } catch (error) {
       console.log(error);
       if (error.errors) {
@@ -30,13 +32,14 @@
 </script>
 
 <template>
-  <q-form @submit.prevent="addLink">
+  <q-form @submit.prevent="addLink" ref="addForm">
     <q-input
       v-model="link"
       label="Ingrese link aquí"
       :rules="[
         (val) => (val && val.trim() !== '') || 'Escribe algo por favor'
       ]"
+      lazy-rules
     ></q-input>
     <q-btn
       class="q-mt-sm full-width"

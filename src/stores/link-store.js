@@ -14,7 +14,7 @@ export const useLinkStore = defineStore("link", () => {
   $q.loadingBar.setDefaults({
     color: 'purple',
     size: '15px',
-    position: 'top',
+    position: 'bottom',
     indeterminate: true,
   })
 
